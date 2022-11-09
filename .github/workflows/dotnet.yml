@@ -14,8 +14,8 @@ jobs:
   build: 
     strategy:
       matrix:
-        os: [ windows-latest, macos-latest ]
-    runs-on: ${{ matrix.os }}
+        os: [ windows, macos ]
+    runs-on: ${{ matrix.os }}-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -28,15 +28,15 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Updload artifacts MacOS
-      if: ${{ contains(matrix.os, 'macos') }}
+    - name: Updload artifacts ${{ matrix.os }}
+      if: ${{ matrix.os == 'macos' }}
       uses: actions/upload-artifact@v3
       with:
-        name: my-artifact
+        name: my-artifact-${{ matrix.os }}
         path: "**/net6.0/**"
-    - name: Updload artifacts Windows
+    - name: Updload artifacts ${{ matrix.os }}
       if: ${{ contains(matrix.os, 'windows') }}
       uses: actions/upload-artifact@v3
       with:
-        name: my-artifact
+        name: my-artifact-${{ matrix.os }}
         path: "**/bin/**"
